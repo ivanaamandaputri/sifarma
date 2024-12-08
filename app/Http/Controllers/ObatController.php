@@ -166,6 +166,21 @@ class ObatController extends Controller
         $obat = Obat::findOrFail($id);
         return view('obat.show', compact('obat'));
     }
+    // Menampilkan data obat untuk operator
+    public function operatorIndex()
+    {
+        $obat = Obat::orderBy('nama', 'asc')->get();
+        return view('operator.dataobat', compact('obat')); // Pastikan untuk mengarahkan ke view yang tepat
+    }
+
+    // Menampilkan detail obat untuk operator
+    public function operatorShowobat($id)
+    {
+        // Mencari data obat berdasarkan ID
+        $obat = Obat::findOrFail($id);
+        return view('operator.showobat', compact('obat')); // Mengembalikan detail data obat
+    }
+
 
     // Menambah stok obat
     public function tambahStok(Request $request, $id)

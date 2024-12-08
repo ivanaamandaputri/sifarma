@@ -83,9 +83,9 @@
                     <a class="nav-link dropdown-toggle d-flex align-items-center" id="navbarDropdown" href="#"
                         role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="avatar-sm me-2">
-                            @if (Auth::users()->foto)
+                            @if (Auth::user()->foto)
                                 <!-- Menampilkan gambar profil yang diupload -->
-                                <img src="{{ asset('storage/users/' . Auth::users()->foto) }}" alt="User Avatar"
+                                <img src="{{ asset('storage/user/' . Auth::user()->foto) }}" alt="User Avatar"
                                     class="avatar-img rounded-circle"
                                     style="width: 35px; height: 35px; object-fit: cover;" />
                             @else
@@ -98,16 +98,16 @@
                         <!-- Nama dan Jabatan -->
                         <div class="profile-username d-flex flex-column" style="color: rgba(255, 255, 255, 0.8);">
                             <!-- Menggunakan rgba untuk efek redup -->
-                            <span class="fw-bold" style="font-size: 14px">{{ Auth::users()->nama_pegawai }}</span>
-                            <small style="font-size: 12px">{{ Auth::users()->jabatan }}</small>
+                            <span class="fw-bold" style="font-size: 14px">{{ Auth::user()->nama_pegawai }}</span>
+                            <small style="font-size: 12px">{{ Auth::user()->jabatan }}</small>
                         </div>
                     </a>
                     <!-- Dropdown -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        @if (Auth::users()->level == 'operator')
+                        @if (Auth::user()->level == 'operator')
                             <!-- Pastikan ini sesuai dengan nama role pada aplikasi Anda -->
                             <li><a class="dropdown-item"
-                                    href="{{ route('profile.index', Auth::users()->id) }}">Profil</a></li>
+                                    href="{{ route('profile.index', Auth::user()->id) }}">Profil</a></li>
                         @endif
                         <li>
                             <a class="dropdown-item" href="#" data-bs-toggle="modal"
@@ -125,7 +125,7 @@
                         <div class="sb-sidenav-menu-heading"></div>
 
                         <!-- Tautan Dashboard untuk Admin -->
-                        @if (Auth::users()->level == 'admin')
+                        @if (Auth::user()->level == 'admin')
                             <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                                 href="{{ route('dashboard') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
@@ -134,7 +134,7 @@
                         @endif
 
                         <!-- Tautan Dashboard untuk Operator -->
-                        @if (Auth::users()->level == 'operator')
+                        @if (Auth::user()->level == 'operator')
                             <a class="nav-link {{ request()->routeIs('dashboard.operator') ? 'active' : '' }}"
                                 href="{{ route('dashboard.operator') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
@@ -145,7 +145,7 @@
                         <div class="sb-sidenav-menu-heading">Menu</div>
 
                         <!-- Hanya tampil untuk Admin -->
-                        @if (Auth::users()->level == 'admin')
+                        @if (Auth::user()->level == 'admin')
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
                                 data-bs-target="#collapseMasterData" aria-expanded="false"
                                 aria-controls="collapseMasterData">
@@ -156,7 +156,7 @@
                             <div class="collapse" id="collapseMasterData" aria-labelledby="headingMasterData"
                                 data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link {{ request()->is('users') ? 'active' : '' }}" href="/users">
+                                    <a class="nav-link {{ request()->is('user') ? 'active' : '' }}" href="/user">
                                         <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                                         User
                                     </a>
@@ -202,7 +202,7 @@
                 @endif
 
                 <!-- Menu Transaksi untuk Operator -->
-                @if (Auth::users()->level == 'operator')
+                @if (Auth::user()->level == 'operator')
                     <a class="nav-link {{ request()->is('operator') ? 'active' : '' }}"
                         href="{{ route('operator.dataobat') }}">
                         <div class="sb-nav-link-icon"><i class="fas fa-pills"></i></div>
@@ -220,7 +220,7 @@
 
                 <div class="sb-sidenav-footer" style="color: white;">
                     <div class="small">Masuk Sebagai</div>
-                    <span class="fw-bold" style="font-size: 20px">{{ Auth::users()->level }}</span>
+                    <span class="fw-bold" style="font-size: 20px">{{ Auth::user()->level }}</span>
                 </div>
 
             </nav>

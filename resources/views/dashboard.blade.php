@@ -3,8 +3,8 @@
 @section('content')
     <h1 class="mt-4">Dashboard</h1>
     <span class="op-7" style="font-size: 18px">Halo,</span>
-    <span class="fw-bold" style="font-size: 20px">{{ Auth::users()->nama }}</span>
-    </span>
+    <span class="fw-bold" style="font-size: 20px">{{ Auth::user()->nama }}</span>
+
     </ol>
     <ol>
     </ol>
@@ -31,10 +31,10 @@
             <div class="card bg-warning mb-4 text-white">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <i class="fas fa-userss fa-2x me-3"></i>
-                        <span>Jumlah users</span>
+                        <i class="fas fa-users fa-2x me-3"></i>
+                        <span>Jumlah user</span>
                     </div>
-                    <div class="h5 font-weight-bold mb-0">{{ $jumlahUsers }}</div>
+                    <div class="h5 font-weight-bold mb-0">{{ $jumlahUser }}</div>
                 </div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
                     <a class="small stretched-link text-white" href="/users">Lihat Detail</a>
