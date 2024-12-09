@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instansi;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -24,7 +25,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('user.create');
+        $instansi = Instansi::all(); // Fetch all instansi
+        return view('user.create', compact('instansi')); // Pass instansi to the view
     }
 
     /**
@@ -32,6 +34,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        // Validasi input
         $request->validate([
             'nip' => 'required|string|unique:users,nip',
             'password' => [
@@ -44,29 +47,33 @@ class UserController extends Controller
             'role' => 'required|string|in:admin,operator',
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string',
-            'profile' => 'nullable|string',  // profile bisa berupa teks atau link
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'profile' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'id_instansi' => 'required|exists:instansi,id', // Validasi instansi
         ]);
 
+        // Menangani upload profile jika ada
         $filename = null;
-        if ($request->hasFile('foto')) {
-            $foto = $request->file('foto');
-            $filename = 'Foto_' . uniqid() . '.' . $foto->getClientOriginalExtension();
-            $foto->storeAs('public/user', $filename);
+        if ($request->hasFile('profile')) {
+            $profile = $request->file('profile');
+            $filename = 'profile_' . uniqid() . '.' . $profile->getClientOriginalExtension();
+            $profile->storeAs('public/user', $filename);
         }
 
+        // Menyimpan data user baru
         User::create([
             'nip' => $request->nip,
-            'password' => bcrypt($request->password),
+            'password' => bcrypt($request->password), // Hash password
             'role' => $request->role,
+            'profile' => $filename, // Ganti dengan $filename
             'nama' => $request->nama,
             'jabatan' => $request->jabatan,
-            'profile' => $request->profile,
-            'foto' => $filename,
+            'id_instansi' => $request->id_instansi, // Menyimpan instansi yang dipilih
         ]);
 
         return redirect()->route('user.index')->with('success', 'Data berhasil disimpan.');
     }
+
+
 
     /**
      * Display the specified resource.
@@ -96,13 +103,18 @@ class UserController extends Controller
         // Validasi input
         $validated = $request->validate([
             'nip' => 'required|unique:users,nip,' . $user->id,
-            'nama' => 'required',
-            'jabatan' => 'required',
-            'profile' => 'nullable|string',
-            'role' => 'required',
             // Validasi password hanya jika password baru diisi
-            'password' => 'nullable|min:6|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:6',
+                'regex:/^(?=.*[a-zA-Z])(?=.*\d).+$/',
+            ],
             'konfirmasi_password' => 'nullable|same:password',
+            'role' => 'required|string|in:admin,operator',
+            'profile' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'nama' => 'required|string|max:255',
+            'jabatan' => 'required|string',
         ]);
 
         // Update data user
@@ -135,8 +147,8 @@ class UserController extends Controller
                 return redirect()->route('user.index')->with('error', 'User dengan level admin tidak dapat dihapus.');
             }
 
-            if ($user->foto) {
-                Storage::delete('public/user/' . $user->foto);
+            if ($user->profile) {
+                Storage::delete('public/user/' . $user->profile);
             }
 
             $user->delete();

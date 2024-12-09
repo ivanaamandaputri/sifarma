@@ -50,7 +50,7 @@
                                 <select name="jenis_obat_id" class="form-control" required>
                                     <option value="" disabled selected>Pilih jenis obat</option>
                                     @foreach ($jenisObat as $jenis)
-                                        <option value="{{ $jenis->id }}">{{ $jenis->nama_jenis }}</option>
+                                        <option value="{{ $jenis->id }}">{{ $jenis->nama }}</option>
                                     @endforeach
                                 </select>
                             </div>

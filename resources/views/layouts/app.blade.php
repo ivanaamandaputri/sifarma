@@ -76,9 +76,9 @@
             <ul class="navbar-nav ms-md-0 me-lg-4 me-3 ms-auto">
                 <li class="nav-item dropdown d-flex align-items-center"> <!-- Menggunakan Flexbox untuk penyusunan -->
                     <!-- Lonceng Notifikasi -->
-                    <a href="{{ route('dashboard.notifikasi') }}" class="nav-link d-flex align-items-center ms-3">
+                    {{-- <a href="{{ route('dashboard.notifikasi') }}" class="nav-link d-flex align-items-center ms-3">
                         <i class="fas fa-bell" style="font-size: 20px;"></i> <!-- Ikon lonceng -->
-                    </a>
+                    </a> --}}
                     <!-- Foto Profil -->
                     <a class="nav-link dropdown-toggle d-flex align-items-center" id="navbarDropdown" href="#"
                         role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -104,7 +104,7 @@
                     </a>
                     <!-- Dropdown -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        @if (Auth::user()->level == 'operator')
+                        @if (Auth::user()->role == 'operator')
                             <!-- Pastikan ini sesuai dengan nama role pada aplikasi Anda -->
                             <li><a class="dropdown-item"
                                     href="{{ route('profile.index', Auth::user()->id) }}">Profil</a></li>
@@ -125,7 +125,7 @@
                         <div class="sb-sidenav-menu-heading"></div>
 
                         <!-- Tautan Dashboard untuk Admin -->
-                        @if (Auth::user()->level == 'admin')
+                        @if (Auth::user()->role == 'admin')
                             <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                                 href="{{ route('dashboard') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
@@ -134,7 +134,7 @@
                         @endif
 
                         <!-- Tautan Dashboard untuk Operator -->
-                        @if (Auth::user()->level == 'operator')
+                        @if (Auth::user()->role == 'operator')
                             <a class="nav-link {{ request()->routeIs('dashboard.operator') ? 'active' : '' }}"
                                 href="{{ route('dashboard.operator') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
@@ -145,7 +145,7 @@
                         <div class="sb-sidenav-menu-heading">Menu</div>
 
                         <!-- Hanya tampil untuk Admin -->
-                        @if (Auth::user()->level == 'admin')
+                        @if (Auth::user()->role == 'admin')
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
                                 data-bs-target="#collapseMasterData" aria-expanded="false"
                                 aria-controls="collapseMasterData">
@@ -157,7 +157,7 @@
                                 data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link {{ request()->is('user') ? 'active' : '' }}" href="/user">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                        <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
                                         User
                                     </a>
                                     <a class="nav-link {{ request()->is('obat') ? 'active' : '' }}" href="/obat">
@@ -169,7 +169,6 @@
                                         <div class="sb-nav-link-icon"><i class="fas fa-pills"></i></div>
                                         Jenis Obat
                                     </a>
-
                                 </nav>
                             </div>
                             <a class="nav-link {{ request()->is('pengajuan') ? 'active' : '' }}"
@@ -202,7 +201,7 @@
                 @endif
 
                 <!-- Menu Transaksi untuk Operator -->
-                @if (Auth::user()->level == 'operator')
+                @if (Auth::user()->role == 'operator')
                     <a class="nav-link {{ request()->is('operator') ? 'active' : '' }}"
                         href="{{ route('operator.dataobat') }}">
                         <div class="sb-nav-link-icon"><i class="fas fa-pills"></i></div>
@@ -220,7 +219,7 @@
 
                 <div class="sb-sidenav-footer" style="color: white;">
                     <div class="small">Masuk Sebagai</div>
-                    <span class="fw-bold" style="font-size: 20px">{{ Auth::user()->level }}</span>
+                    <span class="fw-bold" style="font-size: 20px">{{ Auth::user()->role }}</span>
                 </div>
 
             </nav>

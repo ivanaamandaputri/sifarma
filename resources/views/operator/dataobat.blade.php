@@ -5,7 +5,7 @@
         <div class="container-fluid d-flex justify-content-between">
             <h4 class="card-title">Data Obat</h4>
         </div>
-
+        <br>
         @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}

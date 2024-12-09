@@ -45,7 +45,7 @@ class ObatController extends Controller
     // Menampilkan form untuk membuat obat baru
     public function create()
     {
-        $jenisObat = JenisObat::select('id', 'nama_jenis')->get();
+        $jenisObat = JenisObat::select('id', 'nama')->get();
         return view('obat.create', compact('jenisObat'));
     }
 

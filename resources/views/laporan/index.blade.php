@@ -67,8 +67,8 @@
                                                 <option value="">Semua Instansi</option>
                                                 @foreach ($instansiList as $instansi)
                                                     <option value="{{ $instansi->id }}"
-                                                        {{ old('ruangan', request('ruangan')) == $instansi->id ? 'selected' : '' }}>
-                                                        {{ $instansi->nama_ruangan }}
+                                                        {{ old('nama', request('nama')) == $instansi->id ? 'selected' : '' }}>
+                                                        {{ $instansi->nama }}
                                                     </option>
                                                 @endforeach
                                             </select>

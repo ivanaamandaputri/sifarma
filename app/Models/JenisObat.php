@@ -12,4 +12,21 @@ class JenisObat extends Model
     protected $fillable = [
         'nama', // Nama jenis obat
     ];
+
+    public function obat()
+    {
+        return $this->hasMany(Obat::class, 'jenis_obat_id');
+    }
+
+    // Relasi dengan Transaksi
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
+
+    // Mutator untuk nama_jenis, mengubah huruf pertama menjadi kapital
+    public function setNamaJenisAttribute($value)
+    {
+        $this->attributes['nama_jenis'] = ucwords(strtolower($value)); // Mengubah huruf pertama menjadi kapital
+    }
 }

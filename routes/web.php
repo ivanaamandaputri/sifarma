@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InstansiController;
 use App\Http\Controllers\JenisObatController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ObatController;
@@ -44,19 +45,19 @@ Route::middleware(['auth', 'check.level:admin'])->group(function () {
     Route::resource('user', UserController::class);
     Route::resource('obat', ObatController::class);
     Route::resource('jenis_obat', JenisObatController::class);
+    Route::resource('instansi', InstansiController::class);
     Route::get('/jenis-obat/{id}/edit', [JenisObatController::class, 'edit'])->name('jenis_obat.edit');
     Route::resource('transaksi', TransaksiController::class);
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
-    Route::get('laporan/download', [LaporanController::class, 'download'])->name('laporan.download');
+    Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
     Route::get('/laporan/obatMasuk', [LaporanController::class, 'obatMasuk'])->name('laporan.obatMasuk');
     Route::get('/laporan/obatKeluar', [LaporanController::class, 'obatKeluar'])->name('laporan.obatKeluar');
     Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
     Route::post('/transaksi/approve/{id}', [PengajuanController::class, 'approve'])->name('transaksi.approve');
     Route::post('/transaksi/reject/{id}', [PengajuanController::class, 'reject'])->name('transaksi.reject');
-    Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
     Route::post('/obat/{id}/tambah-stok', [ObatController::class, 'tambahStok'])->name('obat.tambahStok');
-    Route::get('/dashboard/notifikasi', [PengajuanController::class, 'getNotifikasi'])->name('dashboard.notifikasi');
-    Route::get('/notifikasi/baca/{id}', [PengajuanController::class, 'bacaNotifikasi'])->name('notifikasi.baca');
+    Route::get('/dashboard/notification', [PengajuanController::class, 'getNotification'])->name('dashboard.notification');
+    Route::get('/notification/baca/{id}', [PengajuanController::class, 'bacaNotification'])->name('notification.baca');
 });
 
 // Rute untuk operator

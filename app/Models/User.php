@@ -35,4 +35,27 @@ class User extends Authenticatable
     protected $hidden = [
         'password'
     ];
+    public function instansi()
+    {
+        return $this->belongsTo(Instansi::class, 'id_instansi');
+    }
+    public function setNamaPegawaiAttribute($value)
+    {
+        $this->attributes['nama_pegawai'] = ucwords(strtolower($value)); // Ubah huruf pertama menjadi kapital
+    }
+
+    public function setNipAttribute($value)
+    {
+        $this->attributes['nip'] = strtoupper($value); // Ubah menjadi huruf kapital
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = ($value);
+    }
+
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
 }
