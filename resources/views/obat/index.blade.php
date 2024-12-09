@@ -62,13 +62,14 @@
                                         {{ number_format($item->stok, 0, ',', '.') }}
                                         @if ($item->stok == 0)
                                             <span class="badge bg-danger">
-                                                {{ auth()->users()->role == 'admin' ? 'Stok Habis, Restok Segera!' : 'Stok Habis!' }}
+                                                {{ auth()->user()->role == 'admin' ? 'Stok Habis, Restok Segera!' : 'Stok Habis!' }}
                                             </span>
                                         @elseif ($item->stok < 5)
                                             <span class="badge bg-warning">
-                                                {{ auth()->users()->role == 'admin' ? 'Hampir Habis, Restok Segera!' : 'Hampir Habis!' }}
+                                                {{ auth()->user()->role == 'admin' ? 'Hampir Habis, Restok Segera!' : 'Hampir Habis!' }}
                                             </span>
                                         @endif
+
                                     </td>
                                     <td>
                                         <!-- Tombol Detail -->
@@ -142,7 +143,7 @@
                         @csrf
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="jumlah" class="form-label">Jumlah Stok</label>
+                                <label for="jumlah" class="form-label">Jumlah Stok (pastikan benar)</label>
                                 <input type="number" name="jumlah" id="jumlah" class="form-control" min="1"
                                     required>
                             </div>
@@ -150,10 +151,6 @@
                                 <label for="sumber" class="form-label">Sumber Stok (Opsional)</label>
                                 <input type="text" name="sumber" id="sumber" class="form-control"
                                     placeholder="Contoh: Supplier A">
-                            </div>
-                            <div class="mb-3">
-                                <label for="tanggal" class="form-label">Tanggal</label>
-                                <input type="date" name="tanggal" id="tanggal" class="form-control" required>
                             </div>
                         </div>
                         <div class="modal-footer">

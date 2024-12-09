@@ -98,7 +98,7 @@
                         <!-- Nama dan Jabatan -->
                         <div class="profile-username d-flex flex-column" style="color: rgba(255, 255, 255, 0.8);">
                             <!-- Menggunakan rgba untuk efek redup -->
-                            <span class="fw-bold" style="font-size: 14px">{{ Auth::user()->nama_pegawai }}</span>
+                            <span class="fw-bold" style="font-size: 14px">{{ Auth::user()->nama }}</span>
                             <small style="font-size: 12px">{{ Auth::user()->jabatan }}</small>
                         </div>
                     </a>
@@ -164,6 +164,12 @@
                                         <div class="sb-nav-link-icon"><i class="fas fa-pills"></i></div>
                                         Data Obat
                                     </a>
+                                    <a class="nav-link {{ request()->is('instansi') ? 'active' : '' }}"
+                                        href="/instansi">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-building"></i></div>
+                                        Instansi
+                                    </a>
+
                                     <a class="nav-link {{ request()->is('jenis_obat') ? 'active' : '' }}"
                                         href="{{ route('jenis_obat.index') }}">
                                         <div class="sb-nav-link-icon"><i class="fas fa-pills"></i></div>

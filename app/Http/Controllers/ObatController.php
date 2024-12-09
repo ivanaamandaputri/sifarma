@@ -85,7 +85,7 @@ class ObatController extends Controller
             'stok' => $request->stok,
             'harga' => $request->harga,
             'exp' => $request->exp,
-            'keterangan' => $request->keterangan,
+            'keterangan' => $request->keterangan ?: 'Tidak ada keterangan',
             'foto' => $filename,
             'jenis_obat' => $request->jenis_obat,
         ]);
@@ -112,7 +112,7 @@ class ObatController extends Controller
             'stok' => 'required|integer|min:0',
             'harga' => 'required|numeric|min:0',
             'exp' => 'nullable|date',
-            'keterangan' => 'nullable|string',
+            'keterangan' => 'required|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'jenis_obat' => 'required|exists:jenis_obat,id',
         ]);
@@ -151,7 +151,7 @@ class ObatController extends Controller
             Storage::delete('public/obat/' . $obat->foto);
         }
 
-        if (\App\Models\Transaksi::where('obat_id', $obat->id)->exists()) {
+        if (\App\Models\Transaksi::where('id_obat', $obat->id)->exists()) {
             return redirect()->route('obat.index')->with('error', 'Obat ini tidak dapat dihapus karena terkait dengan transaksi.');
         }
 
@@ -188,16 +188,14 @@ class ObatController extends Controller
         $request->validate([
             'jumlah' => 'required|integer|min:1',
             'sumber' => 'nullable|string|max:255',
-            'tanggal' => 'required|date',
         ]);
 
         $obat = Obat::findOrFail($id);
 
         StokMasuk::create([
-            'obat_id' => $obat->id,
+            'id_obat' => $obat->id,
             'jumlah' => $request->jumlah,
             'sumber' => $request->sumber,
-            'tanggal' => $request->tanggal,
         ]);
 
         $obat->increment('stok', $request->jumlah);

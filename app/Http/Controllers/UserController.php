@@ -43,7 +43,7 @@ class UserController extends Controller
                 'min:6',
                 'regex:/^(?=.*[a-zA-Z])(?=.*\d).+$/',
             ],
-            'konfirmasi_password' => 'required|same:password',
+            'password_confirmation' => 'required|same:password',
             'role' => 'required|string|in:admin,operator',
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string',
@@ -63,6 +63,7 @@ class UserController extends Controller
         User::create([
             'nip' => $request->nip,
             'password' => bcrypt($request->password), // Hash password
+            'password_confirmation' => 'required|same:password',
             'role' => $request->role,
             'profile' => $filename, // Ganti dengan $filename
             'nama' => $request->nama,
@@ -72,8 +73,6 @@ class UserController extends Controller
 
         return redirect()->route('user.index')->with('success', 'Data berhasil disimpan.');
     }
-
-
 
     /**
      * Display the specified resource.
@@ -90,7 +89,8 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::findOrFail($id);
-        return view('user.edit', compact('user'));
+        $instansis = Instansi::all(); // Mengambil semua instansi
+        return view('user.edit', compact('user', 'instansis'));
     }
 
     /**
@@ -100,31 +100,39 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // Validasi input
-        $validated = $request->validate([
+        $request->validate([
             'nip' => 'required|unique:users,nip,' . $user->id,
-            // Validasi password hanya jika password baru diisi
-            'password' => [
-                'required',
-                'string',
-                'min:6',
-                'regex:/^(?=.*[a-zA-Z])(?=.*\d).+$/',
-            ],
-            'konfirmasi_password' => 'nullable|same:password',
+            'password' => 'nullable|min:6|confirmed',
+            'password_confirmation' =>  'nullable|same:password',
             'role' => 'required|string|in:admin,operator',
             'profile' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string',
+            'id_instansi' => 'required|exists:instansi,id', // Ensure instansi is required for update as well
         ]);
 
         // Update data user
         $user->nip = $request->nip;
         $user->nama = $request->nama;
         $user->jabatan = $request->jabatan;
-        $user->profile = $request->profile;
         $user->role = $request->role;
+        $user->id_instansi = $request->id_instansi;
 
-        // Jika password diisi, update password
+        // Handle profile image update if a new file is uploaded
+        if ($request->hasFile('profile')) {
+            // Delete the old profile if it exists
+            if ($user->profile) {
+                Storage::delete('public/user/' . $user->profile);
+            }
+
+            // Upload the new profile
+            $profile = $request->file('profile');
+            $filename = 'profile_' . uniqid() . '.' . $profile->getClientOriginalExtension();
+            $profile->storeAs('public/user', $filename);
+            $user->profile = $filename;
+        }
+
+        // If password is provided, update the password
         if ($request->password) {
             $user->password = bcrypt($request->password);
         }
@@ -147,6 +155,7 @@ class UserController extends Controller
                 return redirect()->route('user.index')->with('error', 'User dengan level admin tidak dapat dihapus.');
             }
 
+            // Delete the profile image if it exists
             if ($user->profile) {
                 Storage::delete('public/user/' . $user->profile);
             }

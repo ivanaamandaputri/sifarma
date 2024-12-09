@@ -31,22 +31,23 @@
                             @foreach ($obat as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->nama_obat }}</td>
+                                    <td>{{ $item->nama }}</td>
                                     <td>{{ $item->dosis }}</td>
-                                    <td>{{ $item->jenisObat->nama_jenis }}</td>
+                                    <td>{{ $item->jenisObat->nama }}</td>
                                     <td>{{ number_format($item->harga, 0, ',', '.') }}</td>
-                                    <td>
+                                    <td class="text-dark">
                                         {{ $item->stok }}
                                         @if ($item->stok == 0)
-                                            <span class="badge badge-danger">
+                                            <span class="badge badge-danger text-dark">
                                                 Stok Habis!
                                             </span>
                                         @elseif ($item->stok < 5)
-                                            <span class="badge badge-warning">
+                                            <span class="badge badge-warning text-dark">
                                                 Hampir Habis!
                                             </span>
                                         @endif
                                     </td>
+
                                     <td>
                                         <a href="{{ route('operator.showobat', $item->id) }}" class="btn btn-primary">Detail
                                             Obat</a>

@@ -63,6 +63,19 @@
                                     <option value="Staff" {{ $user->jabatan == 'Staff' ? 'selected' : '' }}>Staff</option>
                                 </select>
                             </div>
+                            <div class="mb-3">
+                                <label for="id_instansi" class="form-label">Instansi</label>
+                                <select name="id_instansi" id="id_instansi" class="form-control" required>
+                                    <option value="">-- Pilih Instansi --</option>
+                                    @foreach ($instansis as $instansi)
+                                        <option value="{{ $instansi->id }}"
+                                            {{ old('id_instansi', $user->id_instansi) == $instansi->id ? 'selected' : '' }}>
+                                            {{ $instansi->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="form-group">
                                 <label for="role">Role</label>
                                 <select name="role" class="form-control" required>

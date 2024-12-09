@@ -11,7 +11,7 @@ class InstansiController extends Controller
     public function index()
     {
         $instansi = Instansi::all();  // Ambil semua data instansi
-        return view('user.create', compact('instansi'));
+        return view('instansi.index', compact('instansi'));
     }
 
     // Menampilkan form untuk membuat instansi baru

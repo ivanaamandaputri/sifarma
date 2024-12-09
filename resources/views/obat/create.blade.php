@@ -36,8 +36,8 @@
                         <!-- Kolom Kanan untuk Input lainnya -->
                         <div class="col-md-8">
                             <div class="form-group">
-                                <label for="nama_obat">Nama Obat</label>
-                                <input type="text" name="nama_obat" class="form-control" placeholder="Masukkan nama obat"
+                                <label for="nama">Nama Obat</label>
+                                <input type="text" name="nama" class="form-control" placeholder="Masukkan nama obat"
                                     required>
                             </div>
                             <div class="form-group">
@@ -47,7 +47,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="jenis">Jenis</label>
-                                <select name="jenis_obat_id" class="form-control" required>
+                                <select name="jenis_obat" class="form-control" required>
                                     <option value="" disabled selected>Pilih jenis obat</option>
                                     @foreach ($jenisObat as $jenis)
                                         <option value="{{ $jenis->id }}">{{ $jenis->nama }}</option>
