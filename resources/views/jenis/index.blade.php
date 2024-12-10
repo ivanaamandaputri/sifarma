@@ -26,7 +26,7 @@
                     <table id="datatablesSimple" class="table-hover table">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>#</th>
                                 <th>Nama Jenis Obat</th>
                                 <th>Aksi</th>
                             </tr>
@@ -41,9 +41,12 @@
                                         <a href="{{ route('jenis_obat.edit', $jenis->id) }}"
                                             class="btn btn-warning">Edit</a>
 
-                                        <!-- Tombol Hapus -->
+                                        <!-- Tombol Hapus hanya ditampilkan jika tidak ada obat yang terkait -->
                                         <button class="btn btn-danger" data-bs-toggle="modal"
-                                            data-bs-target="#modalHapus{{ $jenis->id }}">Hapus</button>
+                                            data-bs-target="#modalHapus{{ $jenis->id }}"
+                                            @if ($jenis->obat()->exists()) disabled @endif>
+                                            Hapus
+                                        </button>
 
                                         <!-- Modal Konfirmasi Hapus -->
                                         <div class="modal fade" id="modalHapus{{ $jenis->id }}" tabindex="-1"
@@ -59,7 +62,8 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         Apakah Anda yakin ingin menghapus data jenis obat
-                                                        <strong>{{ $jenis->nama }}</strong>? Data yang sudah dihapus tidak
+                                                        <strong>{{ $jenis->nama }}</strong>? Data yang sudah dihapus
+                                                        tidak
                                                         dapat dikembalikan.
                                                     </div>
                                                     <div class="modal-footer">

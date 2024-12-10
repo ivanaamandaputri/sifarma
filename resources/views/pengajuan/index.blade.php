@@ -60,7 +60,7 @@
                                     <td>{{ $transaksi->jumlah_acc }}</td>
                                     <td>{{ number_format($transaksi->obat->harga, 0, ',', '.') }}</td>
                                     <td>{{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
-                                    <td>{{ $transaksi->instansi->nama }}</td>
+                                    <td>{{ $transaksi->instansi->nama ?? 'Tidak Diketahui' }}</td>
                                     <td>
                                         @if ($transaksi->status === 'Disetujui')
                                             <span class="badge bg-success">{{ $transaksi->status }}</span>

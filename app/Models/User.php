@@ -39,23 +39,17 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Instansi::class, 'id_instansi');
     }
-    public function setNamaPegawaiAttribute($value)
+    public function setNamaAttribute($value)
     {
-        $this->attributes['nama_pegawai'] = ucwords(strtolower($value)); // Ubah huruf pertama menjadi kapital
-    }
-
-    public function setNipAttribute($value)
-    {
-        $this->attributes['nip'] = strtoupper($value); // Ubah menjadi huruf kapital
+        $this->attributes['nama'] = ucwords(strtolower($value)); // Ubah huruf pertama menjadi kapital
     }
 
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = ($value);
     }
-
     public function transaksi()
     {
-        return $this->hasMany(Transaksi::class);
+        return $this->hasMany(Transaksi::class, 'id_users');
     }
 }

@@ -150,11 +150,11 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-
-            if ($user->role === 'admin') {
-                return redirect()->route('user.index')->with('error', 'User dengan level admin tidak dapat dihapus.');
+            // Pengecekan apakah user admin dan memiliki transaksi
+            if ($user->role === 'admin' || $user->transaksi->isNotEmpty()) {
+                return redirect()->route('user.index')->with('error', 'User admin atau yang memiliki transaksi tidak dapat dihapus.');
             }
-
+        
             // Delete the profile image if it exists
             if ($user->profile) {
                 Storage::delete('public/user/' . $user->profile);

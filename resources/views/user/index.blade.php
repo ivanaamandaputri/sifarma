@@ -55,8 +55,14 @@
                                     <td>
                                         <a href="{{ route('user.show', $item->id) }}" class="btn btn-info btn">Detail</a>
                                         <a href="{{ route('user.edit', $item->id) }}" class="btn btn-warning btn">Edit</a>
-                                        <button class="btn btn-danger btn" data-bs-toggle="modal"
-                                            data-bs-target="#modalHapus{{ $item->id }}">Hapus</button>
+                                        <button class="btn btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#modalHapus{{ $item->id }}"
+                                            @if ($item->role !== 'admin' && $item->transaksi->isNotEmpty()) disabled 
+                                            title="Tombol hapus dinonaktifkan karena transaksi sudah ada" @endif>
+                                            Hapus
+                                        </button>
+
+
                                     </td>
                                 </tr>
 

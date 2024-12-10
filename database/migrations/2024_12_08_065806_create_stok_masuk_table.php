@@ -17,7 +17,6 @@ return new class extends Migration
             $table->integer('jumlah');
             $table->string('sumber');
             $table->timestamps();
-
             $table->foreign('id_obat')->references('id')->on('obat')->onDelete('cascade');
         });
     }

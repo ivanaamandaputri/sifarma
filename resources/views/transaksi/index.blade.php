@@ -51,7 +51,7 @@
                                     <td>{{ $item->obat->dosis }}</td>
                                     <td>{{ $item->obat->jenisObat->nama }}</td>
                                     <td>{{ number_format($item->jumlah_permintaan, 0, ',', '.') }}</td>
-                                    <td>{{ $item->acc ?? '-' }}</td>
+                                    <td>{{ $item->jumlah_acc ?? '-' }}</td>
                                     <td>{{ number_format($item->obat->harga, 0, ',', '.') }}</td>
                                     <td>{{ number_format($item->total_harga, 0, ',', '.') }}</td>
                                     <td>
@@ -189,27 +189,25 @@
             let selectedTransaksiId;
             let selectedObatId;
 
-            $('.delete-btn').click(function() {
-                selectedTransaksiId = $(this).closest('form').data('id');
-                $('#confirmDeleteModal').modal('show');
-            });
+            // $('.delete-btn').click(function() {
+            //     selectedTransaksiId = $(this).closest('form').data('id');
+            //     $('#confirmDeleteModal').modal('show');
+            // });
 
-            $('#confirmDeleteBtn').click(function() {
-                $.ajax({
-                    url: '{{ route('transaksi.destroy', ':id') }}'.replace(':id',
-                        selectedTransaksiId),
-                    method: 'DELETE',
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function() {
-                        $('#confirmDeleteModal').modal('hide');
-                        location.reload();
-                    }
-                });
-
-
-            });
+            // $('#confirmDeleteBtn').click(function() {
+            //     $.ajax({
+            //         url: '{{ route('transaksi.destroy', ':id') }}'.replace(':id',
+            //             selectedTransaksiId),
+            //         method: 'DELETE',
+            //         data: {
+            //             _token: $('meta[name="csrf-token"]').attr('content')
+            //         },
+            //         success: function() {
+            //             $('#confirmDeleteModal').modal('hide');
+            //             location.reload();
+            //         }
+            //     });
+            // });
 
             $('.view-reason-btn').click(function() {
                 var reason = $(this).data('reason');
@@ -217,26 +215,30 @@
                 $('#reasonModal').modal('show');
             });
 
-            $('.selesai-btn').click(function() {
-                selectedTransaksiId = $(this).data('id');
+            $(document).on('click', '.selesai-btn', function() {
+                const transaksiId = $(this).data('id');
                 $('#confirmSelesaiModal').modal('show');
-            });
 
-            $('#confirmSelesaiBtn').click(function() {
-                $.ajax({
-                    url: '{{ route('transaksi.index') }}/' + selectedTransaksiId,
-                    method: 'POST',
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                        _method: 'PUT',
-                        status: 'Selesai'
-                    },
-                    success: function() {
-                        $('#confirmSelesaiModal').modal('hide');
-                        location.reload();
-                    }
+                // Bind the click event for the "Ya, Selesai" button only once
+                $('#confirmSelesaiBtn').off('click').on('click', function() {
+                    $.ajax({
+                        url: '/transaksi/selesai/' + transaksiId,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            // Ubah status tombol aksi sesuai status baru
+                            $('#confirmSelesaiModal').modal('hide');
+                            location.reload(); // Reload untuk memperbarui tampilan
+                        },
+                        error: function(xhr, status, error) {
+                            alert('Terjadi kesalahan saat menyelesaikan transaksi');
+                        }
+                    });
                 });
             });
+
 
             $('.retur-btn').click(function() {
                 selectedTransaksiId = $(this).data('id');
@@ -268,6 +270,7 @@
                     }
                 });
             });
+
         });
     </script>
 @endsection

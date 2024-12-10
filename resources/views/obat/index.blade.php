@@ -73,7 +73,8 @@
                                     </td>
                                     <td>
                                         <!-- Tombol Detail -->
-                                        <a href="{{ route('obat.show', $item->id) }}" class="btn btn-infoz">Detail</a>
+                                        <a href="{{ route('obat.show', $item->id) }}"
+                                            class="btn btn-info btn-sm">Detail</a>
 
                                         @if (!$readOnly)
                                             <!-- Tombol Edit -->
@@ -84,9 +85,12 @@
                                             <button class="btn btn-success btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#modalTambahStok{{ $item->id }}">Tambah Stok</button>
 
-                                            <!-- Tombol Hapus -->
-                                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#modalHapus{{ $item->id }}">Hapus</button>
+                                            <!-- Pengecekan apakah obat sudah memiliki transaksi -->
+                                            @if (!\App\Models\Transaksi::where('id_obat', $item->id)->exists())
+                                                <!-- Tombol Hapus hanya ditampilkan jika obat belum memiliki transaksi -->
+                                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#modalHapus{{ $item->id }}">Hapus</button>
+                                            @endif
                                         @endif
                                     </td>
 
@@ -144,13 +148,24 @@
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="jumlah" class="form-label">Jumlah Stok (pastikan benar)</label>
-                                <input type="number" name="jumlah" id="jumlah" class="form-control" min="1"
-                                    required>
+                                <input type="number" name="jumlah" id="jumlah"
+                                    class="form-control @error('jumlah') is-invalid @enderror" min="1" required>
+                                @error('jumlah')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="sumber" class="form-label">Sumber Stok (Opsional)</label>
-                                <input type="text" name="sumber" id="sumber" class="form-control"
+                                <input type="text" name="sumber" id="sumber"
+                                    class="form-control @error('sumber') is-invalid @enderror"
                                     placeholder="Contoh: Supplier A">
+                                @error('sumber')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -158,6 +173,7 @@
                             <button type="submit" class="btn btn-success">Tambah Stok</button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>

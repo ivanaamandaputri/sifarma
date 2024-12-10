@@ -14,11 +14,11 @@ class JenisObatSeeder extends Seeder
     public function run(): void
     {
         DB::table('jenis_obat')->insert([
-            ['nama' => 'Obat Sirup'],
-            ['nama' => 'Obat Tablet'],
-            ['nama' => 'Obat Kapsul'],
-            ['nama' => 'Obat Salep'],
-            ['nama' => 'Obat Injeksi'],
+            ['nama' => 'Sirup'],
+            ['nama' => 'Tablet'],
+            ['nama' => 'Kapsul'],
+            ['nama' => 'Salep'],
+            ['nama' => 'Injeksi'],
         ]);
     }
 }

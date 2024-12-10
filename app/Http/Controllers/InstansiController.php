@@ -59,6 +59,14 @@ class InstansiController extends Controller
     public function destroy($id)
     {
         $instansi = Instansi::findOrFail($id);
+
+        // Mengecek apakah instansi sudah memiliki transaksi
+        if (\App\Models\Transaksi::where('id_instansi', $instansi->id)->exists()) {
+            // Jika sudah ada transaksi yang terkait, tidak bisa dihapus
+            return redirect()->route('instansi.index')->with('error', 'Instansi ini tidak dapat dihapus karena terkait dengan transaksi.');
+        } 
+
+        // Menghapus instansi jika tidak terkait dengan transaksi
         $instansi->delete();
 
         return redirect()->route('instansi.index')->with('success', 'Instansi berhasil dihapus');

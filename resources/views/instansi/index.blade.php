@@ -40,40 +40,46 @@
                                         <!-- Tombol Edit -->
                                         <a href="{{ route('instansi.edit', $i->id) }}" class="btn btn-warning">Edit</a>
 
-                                        <!-- Tombol Hapus -->
-                                        <button class="btn btn-danger" data-bs-toggle="modal"
-                                            data-bs-target="#modalHapus{{ $i->id }}">Hapus</button>
+                                        <!-- Tombol Hapus hanya ditampilkan jika tidak ada transaksi terkait -->
+                                        @if (\App\Models\Transaksi::where('id_instansi', $i->id)->exists())
+                                            <!-- Jika ada transaksi yang terkait, tombol Hapus dinonaktifkan -->
+                                            <button class="btn btn-danger" disabled>Hapus</button>
+                                        @else
+                                            <!-- Tombol Hapus hanya jika tidak ada transaksi terkait -->
+                                            <button class="btn btn-danger" data-bs-toggle="modal"
+                                                data-bs-target="#modalHapus{{ $i->id }}">Hapus</button>
 
-                                        <!-- Modal Konfirmasi Hapus -->
-                                        <div class="modal fade" id="modalHapus{{ $i->id }}" tabindex="-1"
-                                            aria-labelledby="modalHapusLabel{{ $i->id }}" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="modalHapusLabel{{ $i->id }}">
-                                                            Konfirmasi Hapus
-                                                        </h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        Apakah Anda yakin ingin menghapus data instansi
-                                                        <strong>{{ $i->nama }}</strong>? Data yang sudah dihapus tidak
-                                                        dapat dikembalikan.
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Batal</button>
-                                                        <form action="{{ route('instansi.destroy', $i->id) }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger">Hapus</button>
-                                                        </form>
+                                            <!-- Modal Konfirmasi Hapus -->
+                                            <div class="modal fade" id="modalHapus{{ $i->id }}" tabindex="-1"
+                                                aria-labelledby="modalHapusLabel{{ $i->id }}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="modalHapusLabel{{ $i->id }}">
+                                                                Konfirmasi Hapus
+                                                            </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Apakah Anda yakin ingin menghapus data instansi
+                                                            <strong>{{ $i->nama }}</strong>? Data yang sudah dihapus
+                                                            tidak dapat dikembalikan.
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Batal</button>
+                                                            <form action="{{ route('instansi.destroy', $i->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-danger">Hapus</button>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

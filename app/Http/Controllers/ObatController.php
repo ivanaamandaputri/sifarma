@@ -151,7 +151,9 @@ class ObatController extends Controller
             Storage::delete('public/obat/' . $obat->foto);
         }
 
+        // Mengecek apakah obat sudah memiliki transaksi
         if (\App\Models\Transaksi::where('id_obat', $obat->id)->exists()) {
+            // Jika obat sudah memiliki transaksi, tidak bisa dihapus
             return redirect()->route('obat.index')->with('error', 'Obat ini tidak dapat dihapus karena terkait dengan transaksi.');
         }
 
@@ -187,7 +189,7 @@ class ObatController extends Controller
     {
         $request->validate([
             'jumlah' => 'required|integer|min:1',
-            'sumber' => 'nullable|string|max:255',
+            'sumber' => 'required|string|max:255',
         ]);
 
         $obat = Obat::findOrFail($id);

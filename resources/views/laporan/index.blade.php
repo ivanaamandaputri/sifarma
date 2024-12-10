@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container py-3">
-        <!-- Tab Navigation -->
+        {{-- <!-- Tab Navigation -->
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="transaksi-tab" data-bs-toggle="tab" data-bs-target="#transaksi"
@@ -16,7 +16,7 @@
                     Laporan Data Obat
                 </button>
             </li>
-        </ul>
+        </ul> --}}
 
         <!-- Tab Content -->
         <div class="tab-content mt-3" id="myTabContent">
@@ -107,7 +107,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Data Obat Tab -->
+            {{-- <!-- Data Obat Tab -->
             <div class="tab-pane fade" id="data-obat" role="tabpanel" aria-labelledby="data-obat-tab">
                 <div class="row py-3">
                     <!-- Laporan Data Obat -->
@@ -147,5 +147,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 @endsection
