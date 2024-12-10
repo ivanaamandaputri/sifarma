@@ -73,7 +73,7 @@
                                     </td>
                                     <td>
                                         <!-- Tombol Detail -->
-                                        <a href="{{ route('obat.show', $item->id) }}" class="btn btn-info">Detail</a>
+                                        <a href="{{ route('obat.show', $item->id) }}" class="btn btn-infoz">Detail</a>
 
                                         @if (!$readOnly)
                                             <!-- Tombol Edit -->

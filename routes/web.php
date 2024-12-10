@@ -48,13 +48,13 @@ Route::middleware(['auth', 'check.level:admin'])->group(function () {
     Route::resource('instansi', InstansiController::class);
     Route::get('/jenis-obat/{id}/edit', [JenisObatController::class, 'edit'])->name('jenis_obat.edit');
     Route::resource('transaksi', TransaksiController::class);
+    Route::post('/transaksi/approve/{id}', [PengajuanController::class, 'approve'])->name('transaksi.approve');
+    Route::post('/transaksi/reject/{id}', [PengajuanController::class, 'reject'])->name('transaksi.reject');
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
     Route::get('/laporan/obatMasuk', [LaporanController::class, 'obatMasuk'])->name('laporan.obatMasuk');
     Route::get('/laporan/obatKeluar', [LaporanController::class, 'obatKeluar'])->name('laporan.obatKeluar');
     Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
-    Route::post('/transaksi/approve/{id}', [PengajuanController::class, 'approve'])->name('transaksi.approve');
-    Route::post('/transaksi/reject/{id}', [PengajuanController::class, 'reject'])->name('transaksi.reject');
     Route::post('/obat/{id}/tambah-stok', [ObatController::class, 'tambahStok'])->name('obat.tambahStok');
     Route::get('/dashboard/notification', [PengajuanController::class, 'getNotification'])->name('dashboard.notification');
     Route::get('/notification/baca/{id}', [PengajuanController::class, 'bacaNotification'])->name('notification.baca');
@@ -69,12 +69,15 @@ Route::middleware(['auth', 'check.level:operator'])->group(function () {
     Route::patch('/transaksi/{id}/selesai', [TransaksiController::class, 'selesai'])->name('transaksi.selesai');
     Route::post('/transaksi/finish/{id}', [TransaksiController::class, 'finish'])->name('transaksi.finish');
     Route::get('/transaksi/detail/{id}', [TransaksiController::class, 'detail'])->name('transaksi.detail');
-    Route::post('/transaksi/selesai/{transaksi}', [TransaksiController::class, 'selesai'])->name('transaksi.selesai');
+    Route::post('/transaksi/selesai/{id}', [TransaksiController::class, 'selesai'])->name('transaksi.selesai');
 
+    Route::post('/transaksi/selesai/{transaksi}', [TransaksiController::class, 'selesai'])->name('transaksi.selesai');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit/{user}', [ProfileController::class, 'edit'])->name('profile.edit');
     // Route untuk memproses pembaruan profil
     Route::put('/profile/edit/{user}', [ProfileController::class, 'update'])->name('profile.update');
-    // Menangani retur transaksi
+    Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
     Route::post('/transaksi/retur', [TransaksiController::class, 'retur'])->name('transaksi.retur');
+    Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
+    Route::delete('transaksi/{transaksi}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
 });

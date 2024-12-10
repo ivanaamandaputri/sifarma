@@ -19,10 +19,11 @@ class JenisObat extends Model
     }
 
     // Relasi dengan Transaksi
-    public function transaksi()
-    {
-        return $this->hasMany(Transaksi::class);
-    }
+    // public function transaksi()
+    // {
+    //     return $this->hasMany(Transaksi::class, 'id_jenis_obat');
+    // }
+
 
     // Mutator untuk nama_jenis, mengubah huruf pertama menjadi kapital
     public function setNamaJenisAttribute($value)

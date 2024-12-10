@@ -9,6 +9,16 @@
                     <div class="card-header">
                         <h4 id="obat-nama">Nama Obat</h4> <!-- Nama obat akan ditampilkan di sini -->
                     </div>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="card-body">
                         <div class="text-center">
                             <img id="obat-foto" src="" alt="Foto Obat" class="img-fluid" style="max-height: 200px;">
@@ -38,15 +48,16 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="tanggal">Tanggal Order:</label>
-                                        <input type="date" name="tanggal" id="tanggal" class="form-control" required>
+                                        <label for="tanggal_order">Tanggal Order:</label>
+                                        <input type="date" name="tanggal_order" id="tanggal_order" class="form-control"
+                                            required>
                                         <div id="formatted-date" class="mt-2"></div>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="obat_id">Nama Obat</label>
-                                        <select name="obat_id" class="form-control" required id="obat_id">
+                                        <label for="id_obat">Nama Obat</label>
+                                        <select name="id_obat" class="form-control" required id="id_obat">
                                             @foreach ($obat as $item)
                                                 <option value="{{ $item->id }}" data-harga="{{ $item->harga }}"
                                                     data-dosis="{{ $item->dosis }}"
@@ -62,12 +73,12 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="jumlah">Jumlah</label>
-                                        <input type="number" name="jumlah" class="form-control" required min="1"
-                                            id="jumlah">
-                                        @if ($errors->has('jumlah'))
+                                        <label for="jumlah_permintaan">Jumlah Permintaan</label>
+                                        <input type="number" name="jumlah_permintaan" class="form-control" required
+                                            min="1" id="jumlah_permintaan">
+                                        @if ($errors->has('jumlah_permintaan'))
                                             <div class="text-danger">
-                                                {{ $errors->first('jumlah') }}
+                                                {{ $errors->first('jumlah_permintaan') }}
                                             </div>
                                         @endif
                                     </div>
@@ -86,6 +97,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <button type="submit" class="btn btn-primary">Order</button>
                             <a href="{{ route('transaksi.index') }}" class="btn btn-secondary">Batal</a>
                         </form>
@@ -97,8 +109,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const obatSelect = document.getElementById('obat_id');
-            const jumlahInput = document.getElementById('jumlah');
+            const obatSelect = document.getElementById('id_obat');
+            const jumlahPermintaanInput = document.getElementById('jumlah_permintaan');
             const totalInput = document.getElementById('total');
             const detailDosis = document.getElementById('detail-dosis');
             const detailJenis = document.getElementById('detail-jenis');
@@ -120,7 +132,7 @@
                 const exp = selectedOption.dataset.exp;
                 const keterangan = selectedOption.dataset.keterangan;
                 const foto = selectedOption.dataset.foto;
-                const jumlah = parseInt(jumlahInput.value) || 0;
+                const jumlahPermintaan = parseInt(jumlahPermintaanInput.value) || 0;
 
                 // Update input fields
                 obatNama.textContent = selectedOption.text; // Menampilkan nama obat
@@ -134,17 +146,17 @@
                 hargaInput.value = harga;
 
                 // Update total
-                totalInput.value = new Intl.NumberFormat('id-ID').format(harga * jumlah);
+                totalInput.value = new Intl.NumberFormat('id-ID').format(harga * jumlahPermintaan);
             };
 
-            // Event listener untuk perubahan pada jumlah
-            jumlahInput.addEventListener('input', () => {
+            // Event listener untuk perubahan pada jumlah_permintaan
+            jumlahPermintaanInput.addEventListener('input', () => {
                 const selectedOption = obatSelect.options[obatSelect.selectedIndex];
                 const harga = parseFloat(selectedOption.dataset.harga);
-                const jumlah = parseInt(jumlahInput.value) || 0;
+                const jumlahPermintaan = parseInt(jumlahPermintaanInput.value) || 0;
 
                 // Update total
-                totalInput.value = new Intl.NumberFormat('id-ID').format(harga * jumlah);
+                totalInput.value = new Intl.NumberFormat('id-ID').format(harga * jumlahPermintaan);
             });
 
             // Event listener untuk perubahan pada obat

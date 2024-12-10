@@ -43,7 +43,7 @@
                                 <th>Acc</th>
                                 <th>Harga (Rp)</th>
                                 <th>Total (Rp)</th>
-                                <th>Puskesmas</th>
+                                <th>Pemesan</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -178,7 +178,7 @@
             const maxJumlah = $(this).data('max-jumlah'); // Mendapatkan jumlah yang diminta
             $('#confirmApproveModal').data('id', id); // Menyimpan ID transaksi di modal
             $('#confirmApproveModal').data('max-jumlah',
-            maxJumlah); // Menyimpan jumlah yang diminta di modal
+                maxJumlah); // Menyimpan jumlah yang diminta di modal
             $('#jumlahAcc').val(''); // Reset input jumlah ACC
             $('#errorAcc').hide(); // Menyembunyikan pesan error
             $('#confirmApproveModal').modal('show');
@@ -193,7 +193,7 @@
             if (jumlahAcc <= 0 || jumlahAcc > maxJumlah) {
                 $('#errorAcc').text(
                     'Jumlah ACC harus lebih besar dari 0 dan tidak boleh melebihi jumlah permintaan'
-                    ).show();
+                ).show();
                 return;
             }
 

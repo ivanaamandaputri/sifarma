@@ -31,33 +31,33 @@ class PengajuanController extends Controller
 
             // Validate the approved amount
             $request->validate([
-                'acc' => 'required|integer|min:1|max:' . $transaksi->jumlah_permintaan, // Ensure ACC is within range
+                'jumlah_acc' => 'required|integer|min:1|max:' . $transaksi->jumlah_permintaan, // Ensure jumlah_ACC is within range
             ]);
 
-            $acc = $request->input('acc'); // Amount approved by the admin
+            $jumlah_acc = $request->input('jumlah_acc'); // Amount approved by the admin
             $obat = $transaksi->obat; // Get the related medicine
 
             // Log for debugging
-            Log::info('Jumlah ACC: ' . $acc);
+            Log::info('Jumlah ACC: ' . $jumlah_acc);
             Log::info('Harga Obat: ' . $obat->harga);
 
             // Check if stock is sufficient
-            if ($obat->stok < $acc) {
+            if ($obat->stok < $jumlah_acc) {
                 return response()->json(['error' => 'Stok obat tidak mencukupi.'], 400);
             }
 
             // Calculate the total price
-            $total = $acc * $obat->harga;
+            $total = $jumlah_acc * $obat->harga;
 
             // Update transaction status and other details
             $transaksi->update([
-                'jumlah_acc' => $acc,
+                'jumlah_acc' => $jumlah_acc,
                 'status' => 'Disetujui', // Update the status to 'Disetujui'
                 'total_harga' => $total, // Calculate the total price
             ]);
 
             // Update the stock of the medicine
-            $obat->stok -= $acc; // Reduce stock based on approved quantity
+            $obat->stok -= $jumlah_acc; // Reduce stock based on approved quantity
             $obat->save();
 
             // Create notification for the operator
@@ -79,7 +79,7 @@ class PengajuanController extends Controller
         try {
             // Validate rejection reason
             $request->validate([
-                'reason' => 'required|string|max:255', // Ensure reason is provided
+                'alasan_penolakan' => 'required|string|max:255', // Ensure reason is provided
             ]);
 
             // Find the transaction by ID
@@ -95,14 +95,14 @@ class PengajuanController extends Controller
                 'status' => 'Ditolak',
                 'jumlah_acc' => 0,
                 'total_harga' => 0,
-                'alasan_penolakan' => $request->input('reason'), // Store rejection reason
+                'alasan_penolakan' => $request->input('alasan_penolakan'), // Store rejection alasan_penolakan
             ]);
 
             // Create a notification for the operator
             Notification::create([
                 'id_users' => $transaksi->id_users, // Operator who requested
                 'judul' => 'Pengajuan Ditolak',
-                'isi' => 'Pengajuan Anda ditolak dengan alasan: ' . $request->input('reason'),
+                'isi' => 'Pengajuan Anda ditolak dengan alasan: ' . $request->input('alasan_penolakan'),
                 'is_read' => false, // Set notification as unread
             ]);
 

@@ -2,12 +2,11 @@
 
 @section('content')
     <div class="container py-3">
-        <!-- Judul dan tombol berada di satu baris -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4>Data Order Obat</h4>
             <a href="{{ route('transaksi.create') }}" class="btn btn-primary">Tambah Transaksi</a>
         </div>
-        <!-- Notifikasi Sukses -->
+
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -15,13 +14,12 @@
             </div>
         @endif
 
-        <!-- Notifikasi Error -->
         @if (session('error'))
             <div class="alert alert-danger">
                 {{ session('error') }}
             </div>
         @endif
-        <!-- Card -->
+
         <br>
         <div class="card mb-4">
             <div class="card-body">
@@ -34,7 +32,7 @@
                                 <th>Nama Obat</th>
                                 <th>Dosis</th>
                                 <th>Jenis</th>
-                                <th>Jumlah</th>
+                                <th>jumlah Order</th>
                                 <th>Acc</th>
                                 <th>Harga (Rp)</th>
                                 <th>Total (Rp)</th>
@@ -53,7 +51,7 @@
                                     <td>{{ $item->obat->dosis }}</td>
                                     <td>{{ $item->obat->jenisObat->nama }}</td>
                                     <td>{{ number_format($item->jumlah_permintaan, 0, ',', '.') }}</td>
-                                    <td>{{ number_format($item->jumlah_acc, 0, ',', '.') }}</td>
+                                    <td>{{ $item->acc ?? '-' }}</td>
                                     <td>{{ number_format($item->obat->harga, 0, ',', '.') }}</td>
                                     <td>{{ number_format($item->total_harga, 0, ',', '.') }}</td>
                                     <td>
@@ -61,8 +59,8 @@
                                             <span class="badge bg-success">Disetujui</span>
                                         @elseif ($item->status === 'Ditolak')
                                             <span class="badge bg-danger">Ditolak</span>
-                                        @elseif ($item->status === 'Diretur')
-                                            <span class="badge bg-dark">Diretur</span>
+                                        @elseif ($item->status === 'Selesai')
+                                            <span class="badge bg-dark">Selesai</span>
                                         @else
                                             <span class="badge bg-warning">Menunggu</span>
                                         @endif
@@ -72,22 +70,27 @@
                                             <button type="button" class="btn btn-sm btn-light view-reason-btn"
                                                 data-reason="{{ $item->alasan_penolakan }}">Alasan</button>
                                         @elseif ($item->status === 'Menunggu')
-                                            <a href="{{ route('transaksi.edit', $item->id) }}"
-                                                class="btn btn-warning btn-sm">Edit</a>
-                                            <form class="d-inline delete-form" data-id="{{ $item->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button"
-                                                    class="btn btn-danger btn-sm delete-btn">Hapus</button>
-                                            </form>
+                                            <div class="d-inline-block me-2">
+                                                <a href="{{ route('transaksi.edit', $item->id) }}"
+                                                    class="btn btn-warning btn-sm">Edit</a>
+                                            </div>
+                                            <div class="d-inline-block">
+                                                <form action="{{ route('transaksi.destroy', $item->id) }}" method="POST"
+                                                    style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                                </form>
+                                            </div>
                                         @elseif ($item->status === 'Disetujui')
                                             <button type="button" class="btn btn-success btn-sm selesai-btn"
                                                 data-id="{{ $item->id }}">Selesai</button>
                                             <button type="button" class="btn btn-warning btn-sm retur-btn"
-                                                data-id="{{ $item->id }}" data-obat="{{ $item->id_obat }}"
-                                                data-nama="{{ $item->obat->nama }}">Retur</button>
+                                                data-id="{{ $item->id }}" data-obat="{{ $item->obat->id }}"
+                                                data-nama="{{ $item->obat->nama_obat }}">Retur</button>
                                         @endif
                                     </td>
+
                                 </tr>
                             @endforeach
                         </tbody>
@@ -96,8 +99,7 @@
             </div>
         </div>
 
-        <!-- Modal Konfirmasi Hapus -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+        {{-- <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -114,7 +116,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
+
 
         <!-- Modal Alasan Penolakan -->
         <div class="modal fade" id="reasonModal" tabindex="-1" aria-hidden="true">
@@ -162,8 +165,8 @@
                     <div class="modal-body">
                         <form id="returForm">
                             <div class="mb-3">
-                                <label for="jumlah" class="form-label">Jumlah</label>
-                                <input type="number" class="form-control" id="jumlah" required>
+                                <label for="jumlah_permintaan" class="form-label">jumlah_permintaan</label>
+                                <input type="number" class="form-control" id="jumlah_permintaan" required>
                             </div>
                             <div class="mb-3">
                                 <label for="alasan" class="form-label">Alasan Retur</label>
@@ -179,27 +182,91 @@
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- Include JS for DataTable -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#datatablesSimple').DataTable({
-                "paging": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
+            let selectedTransaksiId;
+            let selectedObatId;
+
+            $('.delete-btn').click(function() {
+                selectedTransaksiId = $(this).closest('form').data('id');
+                $('#confirmDeleteModal').modal('show');
             });
 
-            // Handling reason view
+            $('#confirmDeleteBtn').click(function() {
+                $.ajax({
+                    url: '{{ route('transaksi.destroy', ':id') }}'.replace(':id',
+                        selectedTransaksiId),
+                    method: 'DELETE',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function() {
+                        $('#confirmDeleteModal').modal('hide');
+                        location.reload();
+                    }
+                });
+
+
+            });
+
             $('.view-reason-btn').click(function() {
                 var reason = $(this).data('reason');
                 $('#reasonText').text(reason);
                 $('#reasonModal').modal('show');
+            });
+
+            $('.selesai-btn').click(function() {
+                selectedTransaksiId = $(this).data('id');
+                $('#confirmSelesaiModal').modal('show');
+            });
+
+            $('#confirmSelesaiBtn').click(function() {
+                $.ajax({
+                    url: '{{ route('transaksi.index') }}/' + selectedTransaksiId,
+                    method: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        _method: 'PUT',
+                        status: 'Selesai'
+                    },
+                    success: function() {
+                        $('#confirmSelesaiModal').modal('hide');
+                        location.reload();
+                    }
+                });
+            });
+
+            $('.retur-btn').click(function() {
+                selectedTransaksiId = $(this).data('id');
+                selectedObatId = $(this).data('obat');
+                $('#returModal').modal('show');
+            });
+
+            $('#returForm').submit(function(e) {
+                e.preventDefault();
+
+                const jumlah_permintaan = $('#jumlah_permintaan').val();
+                const alasan = $('#alasan').val();
+                const password = $('#password').val();
+
+                $.ajax({
+                    url: '{{ route('transaksi.retur') }}',
+                    method: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        transaksi_id: selectedTransaksiId,
+                        id_obat: selectedObatId,
+                        jumlah_permintaan: jumlah_permintaan,
+                        alasan: alasan,
+                        password: password
+                    },
+                    success: function() {
+                        $('#returModal').modal('hide');
+                        location.reload();
+                    }
+                });
             });
         });
     </script>

@@ -35,9 +35,9 @@
                     </div>
 
                     <div class="card-body">
-                        @if ($errors->has('jumlah'))
+                        @if ($errors->has('jumlah_permintaan'))
                             <div class="alert alert-danger">
-                                {{ $errors->first('jumlah') }}
+                                {{ $errors->first('jumlah_permintaan') }}
                             </div>
                         @endif
 
@@ -47,37 +47,40 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="tanggal">Tanggal Order:</label>
-                                        <input type="date" name="tanggal" id="tanggal" class="form-control"
-                                            value="{{ $transaksi->tanggal_order }}" required>
+                                        <label for="tanggal_order">Tanggal Order:</label>
+                                        <input type="date" name="tanggal_order" id="tanggal_order" class="form-control"
+                                            value="{{ $transaksi->tanggal_order_order }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="obat_id">Nama Obat</label>
-                                        <select name="obat_id" class="form-control" required id="obat_id">
+                                        <label for="id_obat">Nama Obat</label>
+                                        <select name="id_obat" class="form-control" required id="id_obat">
                                             @foreach ($obatList as $item)
                                                 <option value="{{ $item->id }}" data-harga="{{ $item->harga }}"
                                                     data-dosis="{{ $item->dosis }}"
-                                                    data-jenis="{{ $item->jenisObat->nama }}"
+                                                    data-jenis="{{ $item->jenisObat->nama ?? 'Tidak Ada Jenis' }}"
                                                     data-stok="{{ $item->stok }}" data-exp="{{ $item->exp }}"
                                                     data-keterangan="{{ $item->keterangan }}"
-                                                    data-foto="{{ asset('storage/obat/' . $item->foto) }}"
+                                                    data-foto="{{ $item->foto ? asset('storage/obat/' . $item->foto) : '' }}"
                                                     {{ $item->id == $transaksi->id_obat ? 'selected' : '' }}>
                                                     {{ $item->nama }}
                                                 </option>
                                             @endforeach
                                         </select>
+
                                     </div>
+
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="jumlah">Jumlah</label>
-                                        <input type="number" name="jumlah" class="form-control" required min="1"
-                                            id="jumlah" value="{{ $transaksi->jumlah_permintaan }}">
-                                        @if ($errors->has('jumlah'))
+                                        <label for="jumlah_permintaan">jumlah_permintaan</label>
+                                        <input type="number" name="jumlah_permintaan" class="form-control" required
+                                            min="1" id="jumlah_permintaan"
+                                            value="{{ $transaksi->jumlah_permintaan }}">
+                                        @if ($errors->has('jumlah_permintaan'))
                                             <div class="text-danger">
-                                                {{ $errors->first('jumlah') }}
+                                                {{ $errors->first('jumlah_permintaan') }}
                                             </div>
                                         @endif
                                     </div>
@@ -108,8 +111,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const obatSelect = document.getElementById('obat_id');
-            const jumlahInput = document.getElementById('jumlah');
+            const obatSelect = document.getElementById('id_obat');
+            const jumlah_permintaanInput = document.getElementById('jumlah_permintaan');
             const totalInput = document.getElementById('total');
             const detailDosis = document.getElementById('detail-dosis');
             const detailJenis = document.getElementById('detail-jenis');
@@ -131,7 +134,7 @@
                 const exp = selectedOption.dataset.exp;
                 const keterangan = selectedOption.dataset.keterangan;
                 const foto = selectedOption.dataset.foto;
-                const jumlah = parseInt(jumlahInput.value) || 0;
+                const jumlah_permintaan = parseInt(jumlah_permintaanInput.value) || 0;
 
                 // Update input fields
                 obatNama.textContent = selectedOption.text;
@@ -145,17 +148,17 @@
                 hargaInput.value = harga;
 
                 // Update total
-                totalInput.value = new Intl.NumberFormat('id-ID').format(harga * jumlah);
+                totalInput.value = new Intl.NumberFormat('id-ID').format(harga * jumlah_permintaan);
             };
 
-            // Event listener untuk perubahan pada jumlah
-            jumlahInput.addEventListener('input', () => {
+            // Event listener untuk perubahan pada jumlah_permintaan
+            jumlah_permintaanInput.addEventListener('input', () => {
                 const selectedOption = obatSelect.options[obatSelect.selectedIndex];
                 const harga = parseFloat(selectedOption.dataset.harga);
-                const jumlah = parseInt(jumlahInput.value) || 0;
+                const jumlah_permintaan = parseInt(jumlah_permintaanInput.value) || 0;
 
                 // Update total
-                totalInput.value = new Intl.NumberFormat('id-ID').format(harga * jumlah);
+                totalInput.value = new Intl.NumberFormat('id-ID').format(harga * jumlah_permintaan);
             });
 
             // Event listener untuk perubahan pada obat

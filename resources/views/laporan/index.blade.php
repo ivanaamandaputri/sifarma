@@ -82,7 +82,7 @@
                                                 @foreach ($obatList as $obat)
                                                     <option value="{{ $obat->id }}"
                                                         {{ old('obat_id', request('obat_id')) == $obat->id ? 'selected' : '' }}>
-                                                        {{ $obat->nama_obat }}
+                                                        {{ $obat->nama }}
                                                     </option>
                                                 @endforeach
                                             </select>

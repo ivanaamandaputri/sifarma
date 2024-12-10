@@ -204,9 +204,9 @@
                     <tbody>
                         @foreach ($laporanTransaksi->groupBy('obat_id') as $obatId => $transaksiGroup)
                             <tr>
-                                <td>{{ $transaksiGroup->first()->obat->nama_obat ?? 'Data Obat Tidak Ada' }}</td>
-                                <td>{{ $transaksiGroup->sum('acc') }}</td>
-                                <td>{{ number_format($transaksiGroup->sum('total'), 0, ',', '.') }}</td>
+                                <td>{{ $transaksiGroup->first()->obat->nama ?? 'Data Obat Tidak Ada' }}</td>
+                                <td>{{ $transaksiGroup->sum('jumlah_acc') }}</td>
+                                <td>{{ number_format($transaksiGroup->sum('total_harga'), 0, ',', '.') }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -252,26 +252,26 @@
                 @foreach ($laporanTransaksi as $index => $transaksi)
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <td>{{ $transaksi->tanggal->formatLocalized('%e %B %Y') }}</td>
-                        <td>{{ $transaksi->obat->nama_obat }} - {{ $transaksi->obat->dosis }} -
-                            {{ $transaksi->obat->jenisObat->nama_jenis }}</td>
-                        <td>{{ $transaksi->acc }}</td>
+                        <td>{{ $transaksi->tanggal_order }}</td>
+                        <td>{{ $transaksi->obat->nama }} - {{ $transaksi->obat->dosis }} -
+                            {{ $transaksi->obat->jenisObat->nama }}</td>
+                        <td>{{ $transaksi->jumlah_acc }}</td>
                         <td>{{ number_format($transaksi->obat->harga, 0, ',', '.') }}</td>
-                        <td>{{ number_format($transaksi->total, 0, ',', '.') }}</td>
+                        <td>{{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
                         <td>
                             <span
                                 class="badge {{ $transaksi->status == 'selesai' ? 'badge-selesai' : ($transaksi->status == 'disetujui' ? 'badge-success' : 'badge badge-light') }}">
                                 {{ ucfirst($transaksi->status) }}
                             </span>
                         </td>
-                        <td>{{ $transaksi->users->ruangan }}</td>
+                        <td>{{ $transaksi->instansi->nama }}</td>
                     </tr>
                 @endforeach
             </tbody>
             <tfoot class="table-secondary">
                 <tr>
                     <th colspan="5" class="text-end">Grand Total</th>
-                    <th>{{ number_format($laporanTransaksi->sum('total'), 0, ',', '.') }}</th>
+                    <th>{{ number_format($laporanTransaksi->sum('total_harga'), 0, ',', '.') }}</th>
                     <th colspan="2"></th>
                 </tr>
             </tfoot>
@@ -279,7 +279,7 @@
 
         <!-- Footer Section -->
         <div class="footer">
-            <p>Grand Total: {{ number_format($laporanTransaksi->sum('total'), 0, ',', '.') }}</p>
+            <p>Grand Total: {{ number_format($laporanTransaksi->sum('total_harga'), 0, ',', '.') }}</p>
             <div class="ttd-section">
                 <p>Tanda Tangan</p>
                 <p class="signature">______________________</p>

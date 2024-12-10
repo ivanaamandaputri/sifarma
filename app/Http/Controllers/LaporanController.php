@@ -4,98 +4,100 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
 use App\Models\Obat;
+use App\Models\User;
+use App\Models\Instansi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
+    /**
+     * Filter transaksi berdasarkan request.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     private function filterTransaksi(Request $request)
     {
-        // Query dasar dengan status
-        $query = Transaksi::with('obat', 'user') // Menggunakan relasi 'obat' dan 'user'
-            ->whereIn('status', ['Menunggu', 'Disetujui', 'Ditolak', 'Diretur']);
+        // Validasi input filter
+        $request->validate([
+            'bulan' => 'nullable|integer|min:1|max:12',
+            'tahun' => 'nullable|integer|min:2000|max:' . now()->year,
+            'instansi_id' => 'nullable|exists:instansi,id',
+            'obat_id' => 'nullable|exists:obat,id',
+        ]);
+
+        // Query transaksi dengan relasi
+        $query = Transaksi::with(['obat', 'user', 'instansi'])
+            ->whereIn('status', ['Disetujui', 'Diretur', 'Retur']); // Filter transaksi berdasarkan status relevan
 
         // Filter berdasarkan bulan
-        if ($request->has('bulan') && $request->bulan != '') {
-            $query->whereMonth('tanggal_order', $request->bulan); // Ganti tanggal ke 'tanggal_order'
+        if ($request->filled('bulan')) {
+            $query->whereMonth('tanggal_order', $request->bulan);
         }
 
         // Filter berdasarkan tahun
-        if ($request->has('tahun') && $request->tahun != '') {
-            $query->whereYear('tanggal_order', $request->tahun); // Ganti tanggal ke 'tanggal_order'
+        if ($request->filled('tahun')) {
+            $query->whereYear('tanggal_order', $request->tahun);
         }
 
-        // Filter berdasarkan instansi (ruangan)
-        if ($request->has('ruangan') && $request->ruangan != '') {
-            $query->whereHas('user', function ($query) use ($request) {
-                $query->where('jabatan', $request->ruangan); // Menyesuaikan dengan 'jabatan' di tabel 'users'
-            });
+        // Filter berdasarkan instansi
+        if ($request->filled('instansi_id')) {
+            $query->where('id_instansi', $request->instansi_id);
         }
 
         // Filter berdasarkan obat
-        if ($request->has('obat_id') && $request->obat_id != '') {
-            $query->where('id_obat', $request->obat_id); // Ganti dengan 'id_obat'
+        if ($request->filled('obat_id')) {
+            $query->where('id_obat', $request->obat_id);
         }
 
         return $query;
     }
 
+    /**
+     * Menampilkan halaman laporan dengan filter.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
-        // Gunakan fungsi filter
+        // Gunakan filter transaksi
         $query = $this->filterTransaksi($request);
 
         // Ambil data transaksi dengan pagination
-        $laporanTransaksi = $query->orderBy('tanggal_order', 'asc')->paginate(10); // Ganti 'tanggal' ke 'tanggal_order'
+        $laporanTransaksi = $query->orderBy('tanggal_order', 'asc')->paginate(10);
 
         // Ambil daftar obat untuk filter
         $obatList = Obat::all();
 
-        // Daftar instansi yang tersedia
-        $instansiList = [
-            'Puskesmas Kaligangsa',
-            'Puskesmas Margadana',
-            'Puskesmas Tegal Barat',
-            'Puskesmas Debong Lor',
-            'Puskesmas Tegal Timur',
-            'Puskesmas Slerok',
-            'Puskesmas Tegal Selatan',
-            'Puskesmas Bandung',
-        ];
+        // Ambil daftar instansi untuk filter
+        $instansiList = Instansi::all();
 
         // Kirim data ke view
         return view('laporan.index', compact('laporanTransaksi', 'obatList', 'instansiList'));
     }
 
+    /**
+     * Mencetak laporan berdasarkan filter.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function cetak(Request $request)
     {
-        // Gunakan fungsi filter
-        $query = Transaksi::with('obat') // Gunakan relasi
-            ->select('transaksi.*')
-            ->orderBy('tanggal_order', 'asc'); // Ganti 'tanggal' ke 'tanggal_order'
+        $instansiList = Instansi::all();
 
-        // Filter berdasarkan bulan
-        if ($request->has('bulan') && $request->bulan != '') {
-            $query->whereMonth('tanggal_order', $request->bulan); // Ganti tanggal ke 'tanggal_order'
-        }
+        // Gunakan filter transaksi
+        $query = $this->filterTransaksi($request);
 
-        // Filter berdasarkan tahun
-        if ($request->has('tahun') && $request->tahun != '') {
-            $query->whereYear('tanggal_order', $request->tahun); // Ganti tanggal ke 'tanggal_order'
-        }
+        // Ambil semua data setelah filter
+        $laporanTransaksi = $query->orderBy('tanggal_order', 'asc')->get();
 
-        // Filter berdasarkan ruangan
-        if ($request->has('ruangan') && $request->ruangan != '') {
-            $query->where('jabatan', $request->ruangan); // Menyesuaikan dengan 'jabatan' di tabel 'users'
-        }
+        // Hitung grand total langsung di database
+        $grandTotal = $laporanTransaksi->sum('total_harga');
 
-        // Filter berdasarkan obat
-        if ($request->has('obat_id') && $request->obat_id != '') {
-            $query->where('id_obat', $request->obat_id); // Ganti dengan 'id_obat'
-        }
-
-        // Ambil data
-        $laporanTransaksi = $query->get();
-
-        return view('laporan.cetak', compact('laporanTransaksi'));
+        // Kirim data ke view
+        return view('laporan.cetak', compact('laporanTransaksi', 'grandTotal'));
     }
 }
